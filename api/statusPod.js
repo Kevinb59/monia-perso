@@ -22,8 +22,14 @@ export default async function handler(req, res) {
             })
         });
 
-        const data = await response.json();
-        res.status(200).json(data.data);
+        const result = await response.json();
+
+        if (!result || !result.data || !result.data.pod) {
+            return res.status(500).json({ error: 'Pas de réponse du serveur RunPod.' });
+        }
+
+        res.status(200).json(result.data.pod); // <- bien envoyer juste "pod"
+        
     } catch (error) {
         console.error('Erreur API StatusPod :', error);
         res.status(500).json({ error: 'Erreur serveur' });
