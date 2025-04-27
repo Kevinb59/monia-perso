@@ -1,0 +1,96 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    color: #fff;
+}
+/* styles simplifiés pour le chat et l'index, déjà envoyés */
+.index-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+#characters {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.character-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 250px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.character-card:hover {
+    transform: scale(1.05);
+}
+.chat-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+}
+#chat-container {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.message {
+    max-width: 70%;
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+    border-radius: 1rem;
+}
+.user {
+    background-color: #6a3093;
+    align-self: flex-end;
+}
+.ai {
+    background-color: #a044ff;
+    align-self: flex-start;
+}
+#chat-form {
+    display: flex;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+}
+#chat-input {
+    flex-grow: 1;
+    padding: 0.8rem;
+    border-radius: 1rem;
+    border: none;
+    margin-right: 0.5rem;
+}
+#chat-input:focus {
+    outline: none;
+}
+button {
+    padding: 0.8rem 1.2rem;
+    border-radius: 1rem;
+    border: none;
+    background-color: #6a3093;
+    color: white;
+    cursor: pointer;
+}
+
+
+.character-image {
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
