@@ -27,3 +27,4 @@ function chooseCharacter(id) {
     localStorage.setItem('selectedCharacter', id);
     window.location.href = 'chat.html';
 }
+
