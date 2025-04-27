@@ -1,17 +1,29 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("characters");
-    characters.forEach(character => {
-        const card = document.createElement("div");
-        card.className = "character-card";
-        card.innerHTML = `
-            <img src="${character.image}" alt="${character.name}" class="character-image">
-            <h3>${character.name}</h3>
-            <p>${character.description}</p>
-        `;
-        card.addEventListener("click", () => {
-            localStorage.setItem("currentCharacter", JSON.stringify(character));
-            window.location.href = "chat.html";
-        });
-        container.appendChild(card);
-    });
+// scripts/index.js
+
+const container = document.getElementById('characters-container');
+
+characters.forEach(character => {
+    const card = document.createElement('div');
+    card.className = 'character-card';
+    card.onclick = () => chooseCharacter(character.id);
+
+    const img = document.createElement('img');
+    img.src = character.image;
+    img.alt = character.name;
+
+    const name = document.createElement('h2');
+    name.textContent = character.name;
+
+    const desc = document.createElement('p');
+    desc.textContent = character.description;
+
+    card.appendChild(img);
+    card.appendChild(name);
+    card.appendChild(desc);
+    container.appendChild(card);
 });
+
+function chooseCharacter(id) {
+    localStorage.setItem('selectedCharacter', id);
+    window.location.href = 'chat.html';
+}
