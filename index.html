@@ -2,14 +2,29 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choisis ton partenaire</title>
     <link rel="stylesheet" href="styles/style.css">
     <script src="scripts/config.js" defer></script>
-    <script src="scripts/characters.js" defer></script>
+    <script src="scripts/connect.js" defer></script>
     <script src="scripts/index.js" defer></script>
 </head>
-<body class="index-page">
-    <h1>Choisis ton partenaire</h1>
-    <div id="characters"></div>
+<body>
+
+    <button id="connect-btn" class="connect-button">Déconnecté</button>
+
+    <h1 class="title">Choisis ton partenaire</h1>
+
+    <div class="characters-container">
+        <div class="character-card" onclick="chooseCharacter('tendre')">
+            <h2>Homme Black Tendre</h2>
+            <p>Joueur, discret, aime les caresses en public...</p>
+        </div>
+        <div class="character-card" onclick="chooseCharacter('dominateur')">
+            <h2>Homme Black Dominateur</h2>
+            <p>Directif, aime soumettre et utiliser des jouets...</p>
+        </div>
+    </div>
+
 </body>
 </html>
