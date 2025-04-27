@@ -2,22 +2,25 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Discussion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Sexy IA</title>
     <link rel="stylesheet" href="styles/style.css">
     <script src="scripts/config.js" defer></script>
-    <script src="scripts/characters.js" defer></script>
     <script src="scripts/chat.js" defer></script>
 </head>
-<body class="chat-page">
-    <header>
-        <button id="back-button">🏠</button>
-        <h2 id="character-name"></h2>
-        <button id="stop-button">🛑</button>
-    </header>
-    <div id="chat-container"></div>
-    <form id="chat-form">
-        <input type="text" id="chat-input" placeholder="Écris ton message..." required>
-        <button type="submit">Envoyer</button>
-    </form>
+<body>
+
+    <button id="connect-btn" class="connect-button">Déconnecté</button>
+    <button id="back-btn" class="back-button" onclick="goBack()">Changer de personnage</button>
+
+    <div id="chat-container" class="chat-container">
+        <!-- Messages ici -->
+    </div>
+
+    <div class="input-container">
+        <textarea id="user-input" placeholder="Écris ton message..."></textarea>
+        <button id="send-btn">Envoyer</button>
+    </div>
+
 </body>
 </html>
