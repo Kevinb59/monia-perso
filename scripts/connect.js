@@ -38,44 +38,16 @@ connectButton.addEventListener('click', async () => {
 });
 
 async function startPod() {
-    const response = await fetch(`https://api.runpod.io/graphql`, {
+    const response = await fetch('/api/startPod', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RUNPOD_API_KEY}`
-        },
-        body: JSON.stringify({
-            query: `
-                mutation {
-                    podResume(input: { podId: "${POD_ID}" }) {
-                        id
-                        status
-                    }
-                }
-            `
-        })
     });
     const data = await response.json();
     if (data.errors) throw new Error(data.errors[0].message);
 }
 
 async function stopPod() {
-    const response = await fetch(`https://api.runpod.io/graphql`, {
+    const response = await fetch('/api/stopPod', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RUNPOD_API_KEY}`
-        },
-        body: JSON.stringify({
-            query: `
-                mutation {
-                    podStop(input: { podId: "${POD_ID}" }) {
-                        id
-                        status
-                    }
-                }
-            `
-        })
     });
     const data = await response.json();
     if (data.errors) throw new Error(data.errors[0].message);
