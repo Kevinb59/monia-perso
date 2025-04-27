@@ -94,3 +94,22 @@ button {
     border-radius: 1rem;
     margin-bottom: 1rem;
 }
+
+.connect-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #b30000;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s;
+}
+
+.connect-button.connected {
+    background-color: #008000; /* Vert pour connecté */
+}
