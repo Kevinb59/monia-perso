@@ -21,21 +21,23 @@ async function sendMessage() {
     addLoading();
 
     try {
-        const response = await fetch(`${OLLAMA_URL}/v1/chat/completions`, {
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: MODEL_NAME,
+                model: 'nous-hermes2-mixtral', // <- on indique directement ici le modèle à utiliser
                 messages: [...history, { role: 'user', content: message }],
                 stream: false
             })
         });
 
+        if (!response.ok) throw new Error('Erreur de la réponse API');
+
         const data = await response.json();
         const botMessage = data.choices[0].message.content.trim();
-        
+
         removeLoading();
         addMessage('bot', botMessage);
     } catch (error) {
