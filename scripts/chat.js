@@ -27,7 +27,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'nous-hermes2-mixtral',
+                model: MODEL_NAME,
                 messages: [...history, { role: 'user', content: message }],
                 stream: false
             })
