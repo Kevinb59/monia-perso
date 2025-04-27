@@ -9,13 +9,12 @@ connectButton.addEventListener('click', async () => {
         connectButton.textContent = 'Connexion...';
         
         try {
-            // Lance la demande d'activation du Pod via l'API Runpod
             await startPod();
             isConnected = true;
             connectButton.textContent = 'Connecté';
             connectButton.classList.add('connected');
         } catch (error) {
-            console.error('Erreur lors de la connexion :', error);
+            console.error('Erreur connexion Pod:', error);
             connectButton.textContent = 'Erreur';
         } finally {
             connectButton.disabled = false;
@@ -25,13 +24,12 @@ connectButton.addEventListener('click', async () => {
         connectButton.textContent = 'Déconnexion...';
 
         try {
-            // Lance la demande d'arrêt du Pod via l'API Runpod
             await stopPod();
             isConnected = false;
             connectButton.textContent = 'Déconnecté';
             connectButton.classList.remove('connected');
         } catch (error) {
-            console.error('Erreur lors de la déconnexion :', error);
+            console.error('Erreur déconnexion Pod:', error);
             connectButton.textContent = 'Erreur';
         } finally {
             connectButton.disabled = false;
@@ -44,7 +42,7 @@ async function startPod() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RUNPOD_API_KEY}` // Stockée dans config.js
+            'Authorization': `Bearer ${RUNPOD_API_KEY}`
         },
         body: JSON.stringify({
             query: `
@@ -57,11 +55,8 @@ async function startPod() {
             `
         })
     });
-
     const data = await response.json();
-    if (data.errors) {
-        throw new Error(data.errors[0].message);
-    }
+    if (data.errors) throw new Error(data.errors[0].message);
 }
 
 async function stopPod() {
@@ -82,9 +77,6 @@ async function stopPod() {
             `
         })
     });
-
     const data = await response.json();
-    if (data.errors) {
-        throw new Error(data.errors[0].message);
-    }
+    if (data.errors) throw new Error(data.errors[0].message);
 }
