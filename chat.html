@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Sexy IA</title>
+    <title>Chat Sexy</title>
     <link rel="stylesheet" href="styles/style.css">
     <script src="scripts/config.js" defer></script>
+    <script src="scripts/characters.js" defer></script>
+    <script src="scripts/connect.js" defer></script>
     <script src="scripts/chat.js" defer></script>
 </head>
 <body>
 
     <button id="connect-btn" class="connect-button">Déconnecté</button>
-    <button id="back-btn" class="back-button" onclick="goBack()">Changer de personnage</button>
+    <button id="back-btn" class="back-button" onclick="window.location.href='index.html'">Changer de personnage</button>
 
     <div id="chat-container" class="chat-container">
-        <!-- Messages ici -->
+        <!-- Messages apparaîtront ici -->
     </div>
 
     <div class="input-container">
