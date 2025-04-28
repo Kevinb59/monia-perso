@@ -4,7 +4,11 @@ export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
     if (!RUNPOD_API_KEY || !POD_ID) {
-        return res.status(500).json({ error: 'Clé API ou POD_ID manquant' });
+        return res.status(500).json({ error: 'RUNPOD_API_KEY ou POD_ID non défini dans les variables d’environnement.' });
+    }
+
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Méthode non autorisée' });
     }
 
     try {
@@ -26,16 +30,10 @@ export default async function handler(req, res) {
             })
         });
 
-        const result = await response.json();
-
-        if (result.errors) {
-            console.error('Erreur RunPod:', result.errors);
-            return res.status(500).json({ error: result.errors[0].message });
-        }
-
-        res.status(200).json(result.data.pod);
+        const data = await response.json();
+        res.status(200).json(data);
     } catch (error) {
-        console.error('Erreur serveur StartPod:', error);
+        console.error('Erreur API Start Pod:', error);
         res.status(500).json({ error: 'Erreur serveur' });
     }
 }
