@@ -88,3 +88,4 @@ function loadHistory() {
         history.forEach(msg => addMessage(msg.role, msg.content));
     }
 }
+
