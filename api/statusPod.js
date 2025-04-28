@@ -13,35 +13,23 @@ export default async function handler(req, res) {
     }
 
     try {
-        const response = await fetch('https://api.runpod.io/graphql', {
-            method: 'POST',
+        const response = await fetch(`https://api.runpod.ai/v2/${POD_ID}/status`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${RUNPOD_API_KEY}`
-            },
-            body: JSON.stringify({
-                query: `
-                    query {
-                        pod(podId: "${POD_ID}") {
-                            id
-                            status
-                        }
-                    }
-                `
-            })
+            }
         });
 
-        const jsonData = await response.json();
+        const data = await response.json();
 
-        if (!response.ok || jsonData.errors) {
-            console.error('Erreur Runpod API:', jsonData.errors || response.statusText);
-            return res.status(500).json({ error: 'Erreur Runpod API' });
+        if (!response.ok) {
+            console.error('Erreur Runpod:', data);
+            return res.status(response.status).json({ error: 'Erreur lors de la récupération du statut du pod.' });
         }
 
-        const podStatus = jsonData.data?.pod?.status || 'STOPPED';
-        res.status(200).json({ status: podStatus });
+        res.status(200).json({ status: data.status });
     } catch (error) {
-        console.error('Erreur interne API StatusPod:', error);
-        res.status(500).json({ error: 'Erreur serveur lors de la vérification du statut' });
+        console.error('Erreur serveur statusPod:', error);
+        res.status(500).json({ error: 'Erreur serveur interne.' });
     }
 }
