@@ -1,4 +1,4 @@
-// scripts/chat.js
+// /scripts/chat.js
 
 const chatContainer = document.getElementById('chat-container');
 const userInput = document.getElementById('user-input');
@@ -27,7 +27,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'nous-hermes2-mixtral', // <- on indique directement ici le modèle à utiliser
+                model: 'nous-hermes2-mixtral',
                 messages: [...history, { role: 'user', content: message }],
                 stream: false
             })
@@ -49,7 +49,7 @@ async function sendMessage() {
 
 function addMessage(role, content) {
     const msg = document.createElement('div');
-    msg.className = role === 'user' ? 'message user' : 'message bot';
+    msg.className = role === 'user' ? 'message user fade-in' : 'message bot fade-in';
     msg.textContent = content;
     chatContainer.appendChild(msg);
     history.push({ role, content });
@@ -59,7 +59,7 @@ function addMessage(role, content) {
 
 function addLoading() {
     const loading = document.createElement('div');
-    loading.className = 'message bot loading';
+    loading.className = 'message bot loading fade-in';
     loading.textContent = '...';
     loading.id = 'loading';
     chatContainer.appendChild(loading);
