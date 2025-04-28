@@ -4,6 +4,7 @@ export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
     if (!RUNPOD_API_KEY || !POD_ID) {
+        console.error('Clé API ou Pod ID manquant.');
         return res.status(500).json({ error: 'Clé API ou Pod ID manquant.' });
     }
 
@@ -30,15 +31,17 @@ export default async function handler(req, res) {
             })
         });
 
-        const data = await response.json();
+        const jsonData = await response.json();
 
-        if (data.errors) {
-            throw new Error(data.errors[0].message);
+        if (!response.ok || jsonData.errors) {
+            console.error('Erreur Runpod API:', jsonData.errors || response.statusText);
+            return res.status(500).json({ error: 'Erreur Runpod API' });
         }
 
-        res.status(200).json({ podStatus: data.data.pod.status });
+        const podStatus = jsonData.data?.pod?.status || 'STOPPED';
+        res.status(200).json({ status: podStatus });
     } catch (error) {
-        console.error('Erreur API StatusPod:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
+        console.error('Erreur interne API StatusPod:', error);
+        res.status(500).json({ error: 'Erreur serveur lors de la vérification du statut' });
     }
 }
