@@ -3,12 +3,13 @@
 const connectButton = document.getElementById('connect-btn');
 let isConnected = false;
 
-async function delay(ms) {
+// Fonction simple pour temporiser
+function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 connectButton.addEventListener('click', async () => {
-    if (connectButton.disabled) return;
+    if (connectButton.disabled) return; // Sécurité anti-multi-clics
 
     connectButton.disabled = true;
     connectButton.innerHTML = '<span class="loader"></span> Traitement...';
@@ -16,15 +17,15 @@ connectButton.addEventListener('click', async () => {
     try {
         if (!isConnected) {
             await startPod();
+            await delay(3000); // Attend un peu que Runpod initialise bien
         } else {
             await stopPod();
+            await delay(3000); // Pareil après un arrêt
         }
-
-        await delay(3000); // Petite pause pour laisser RunPod se mettre à jour
         await checkPodStatus();
     } catch (error) {
-        console.error('Erreur de connexion/déconnexion Pod :', error);
-        connectButton.textContent = 'Erreur';
+        console.error('Erreur bouton Pod :', error);
+        connectButton.innerHTML = 'Erreur';
         connectButton.classList.remove('connected', 'disconnected');
     } finally {
         connectButton.disabled = false;
@@ -32,45 +33,37 @@ connectButton.addEventListener('click', async () => {
 });
 
 async function startPod() {
-    const response = await fetch('/api/startPod', { method: 'POST' });
-    if (!response.ok) {
-        throw new Error('Erreur au démarrage du Pod.');
-    }
+    await fetch('/api/startPod', { method: 'POST' });
 }
 
 async function stopPod() {
-    const response = await fetch('/api/stopPod', { method: 'POST' });
-    if (!response.ok) {
-        throw new Error('Erreur à l\'arrêt du Pod.');
-    }
+    await fetch('/api/stopPod', { method: 'POST' });
 }
 
 async function checkPodStatus() {
     try {
-        const response = await fetch('/api/statusPod', { method: 'GET' }); // <- Correct ici : méthode GET
-        if (!response.ok) {
-            throw new Error('Erreur lors de la vérification du statut.');
-        }
+        const response = await fetch('/api/statusPod', { method: 'GET' });
         const data = await response.json();
-        const podStatus = data.status || data.podStatus || 'STOPPED'; // pour gérer les deux cas
+
+        const podStatus = data.status || data.podStatus || 'STOPPED';
 
         if (podStatus === 'RUNNING') {
             isConnected = true;
-            connectButton.textContent = 'Connecté';
+            connectButton.innerHTML = '🟢 Connecté';
             connectButton.classList.add('connected');
             connectButton.classList.remove('disconnected');
         } else {
             isConnected = false;
-            connectButton.textContent = 'Déconnecté';
+            connectButton.innerHTML = '🔴 Déconnecté';
             connectButton.classList.add('disconnected');
             connectButton.classList.remove('connected');
         }
     } catch (error) {
-        console.error('Erreur lors de la vérification du statut du Pod :', error);
-        connectButton.textContent = 'Erreur';
+        console.error('Erreur vérification statut Pod :', error);
+        connectButton.innerHTML = 'Erreur';
         connectButton.classList.remove('connected', 'disconnected');
     }
 }
 
-// Vérifie l'état du Pod au chargement
+// Au chargement de la page, on vérifie l'état automatiquement
 checkPodStatus();
