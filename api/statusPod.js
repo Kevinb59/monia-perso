@@ -4,7 +4,6 @@ export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
     if (!RUNPOD_API_KEY || !POD_ID) {
-        console.error('Clé API ou Pod ID manquant.');
         return res.status(500).json({ error: 'Clé API ou Pod ID manquant.' });
     }
 
@@ -23,13 +22,13 @@ export default async function handler(req, res) {
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('Erreur Runpod:', data);
-            return res.status(response.status).json({ error: 'Erreur lors de la récupération du statut du pod.' });
+            console.error('Erreur API Runpod:', data);
+            return res.status(response.status).json({ error: 'Erreur Runpod: ' + (data.error || 'Erreur inconnue') });
         }
 
         res.status(200).json({ status: data.status });
     } catch (error) {
         console.error('Erreur serveur statusPod:', error);
-        res.status(500).json({ error: 'Erreur serveur interne.' });
+        res.status(500).json({ error: 'Erreur serveur.' });
     }
 }
