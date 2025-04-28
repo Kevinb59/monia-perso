@@ -4,7 +4,11 @@ export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
     if (!RUNPOD_API_KEY || !POD_ID) {
-        return res.status(500).json({ error: 'Clé API ou POD_ID manquant' });
+        return res.status(500).json({ error: 'Clé API ou Pod ID manquant.' });
+    }
+
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Méthode non autorisée' });
     }
 
     try {
@@ -12,30 +16,29 @@ export default async function handler(req, res) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${RUNPOD_API_KEY}`
+                'Authorization': `Bearer ${RUNPOD_API_KEY}`,
             },
             body: JSON.stringify({
                 query: `
                     mutation {
                         podStop(input: { podId: "${POD_ID}" }) {
                             id
-                            status
+                            desiredStatus
                         }
                     }
                 `
             })
         });
 
-        const result = await response.json();
+        const data = await response.json();
 
-        if (result.errors) {
-            console.error('Erreur arrêt Pod:', result.errors);
-            return res.status(500).json({ error: result.errors[0].message });
+        if (data.errors) {
+            throw new Error(data.errors[0].message);
         }
 
-        res.status(200).json(result.data.pod);
+        res.status(200).json({ success: true });
     } catch (error) {
-        console.error('Erreur serveur arrêt Pod:', error);
-        res.status(500).json({ error: 'Erreur serveur' });
+        console.error('Erreur API StopPod:', error);
+        res.status(500).json({ error: 'Erreur serveur lors de l\'arrêt du Pod.' });
     }
 }
