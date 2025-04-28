@@ -3,6 +3,10 @@
 export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
+    if (!RUNPOD_API_KEY || !POD_ID) {
+        return res.status(500).json({ error: 'Clé API ou POD_ID manquant' });
+    }
+
     try {
         const response = await fetch('https://api.runpod.io/graphql', {
             method: 'POST',
@@ -24,14 +28,14 @@ export default async function handler(req, res) {
 
         const result = await response.json();
 
-        if (!result || !result.data || !result.data.pod) {
-            return res.status(500).json({ error: 'Pas de réponse du serveur RunPod.' });
+        if (result.errors) {
+            console.error('Erreur RunPod:', result.errors);
+            return res.status(500).json({ error: result.errors[0].message });
         }
 
-        res.status(200).json(result.data.pod); // <- bien envoyer juste "pod"
-        
+        res.status(200).json(result.data.pod);
     } catch (error) {
-        console.error('Erreur API StatusPod :', error);
+        console.error('Erreur serveur StatusPod:', error);
         res.status(500).json({ error: 'Erreur serveur' });
     }
 }
