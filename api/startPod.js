@@ -12,33 +12,23 @@ export default async function handler(req, res) {
     }
 
     try {
-        const response = await fetch('https://api.runpod.io/graphql', {
+        const response = await fetch(`https://api.runpod.ai/v2/${POD_ID}/resume`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${RUNPOD_API_KEY}`,
-            },
-            body: JSON.stringify({
-                query: `
-                    mutation {
-                        podResume(input: { podId: "${POD_ID}" }) {
-                            id
-                            desiredStatus
-                        }
-                    }
-                `
-            })
+                'Authorization': `Bearer ${RUNPOD_API_KEY}`
+            }
         });
 
         const data = await response.json();
 
-        if (data.errors) {
-            throw new Error(data.errors[0].message);
+        if (!response.ok) {
+            console.error('Erreur API Runpod:', data);
+            return res.status(response.status).json({ error: 'Erreur Runpod: ' + (data.error || 'Erreur inconnue') });
         }
 
-        res.status(200).json({ success: true });
+        res.status(200).json({ message: 'Pod démarré.' });
     } catch (error) {
-        console.error('Erreur API StartPod:', error);
-        res.status(500).json({ error: 'Erreur serveur lors du démarrage du Pod.' });
+        console.error('Erreur serveur startPod:', error);
+        res.status(500).json({ error: 'Erreur serveur.' });
     }
 }
