@@ -13,43 +13,48 @@ connectButton.addEventListener('click', async () => {
     connectButton.disabled = true;
     connectButton.innerHTML = '<span class="loader"></span> Traitement...';
 
-    if (!isConnected) {
-        try {
+    try {
+        if (!isConnected) {
             await startPod();
-            await delay(3000);
-            await checkPodStatus();
-        } catch (error) {
-            console.error('Erreur connexion Pod :', error);
-        } finally {
-            connectButton.disabled = false;
-        }
-    } else {
-        try {
+        } else {
             await stopPod();
-            await delay(3000);
-            await checkPodStatus();
-        } catch (error) {
-            console.error('Erreur déconnexion Pod :', error);
-        } finally {
-            connectButton.disabled = false;
         }
+
+        await delay(3000); // Petite pause pour laisser RunPod se mettre à jour
+        await checkPodStatus();
+    } catch (error) {
+        console.error('Erreur de connexion/déconnexion Pod :', error);
+        connectButton.textContent = 'Erreur';
+        connectButton.classList.remove('connected', 'disconnected');
+    } finally {
+        connectButton.disabled = false;
     }
 });
 
 async function startPod() {
-    await fetch('/api/startPod', { method: 'POST' });
+    const response = await fetch('/api/startPod', { method: 'POST' });
+    if (!response.ok) {
+        throw new Error('Erreur au démarrage du Pod.');
+    }
 }
 
 async function stopPod() {
-    await fetch('/api/stopPod', { method: 'POST' });
+    const response = await fetch('/api/stopPod', { method: 'POST' });
+    if (!response.ok) {
+        throw new Error('Erreur à l\'arrêt du Pod.');
+    }
 }
 
 async function checkPodStatus() {
     try {
-        const response = await fetch('/api/statusPod', { method: 'POST' });
+        const response = await fetch('/api/statusPod', { method: 'GET' }); // <- Correct ici : méthode GET
+        if (!response.ok) {
+            throw new Error('Erreur lors de la vérification du statut.');
+        }
         const data = await response.json();
+        const podStatus = data.status || data.podStatus || 'STOPPED'; // pour gérer les deux cas
 
-        if (data.status === 'RUNNING') {
+        if (podStatus === 'RUNNING') {
             isConnected = true;
             connectButton.textContent = 'Connecté';
             connectButton.classList.add('connected');
@@ -61,7 +66,7 @@ async function checkPodStatus() {
             connectButton.classList.remove('connected');
         }
     } catch (error) {
-        console.error('Erreur vérification état Pod :', error);
+        console.error('Erreur lors de la vérification du statut du Pod :', error);
         connectButton.textContent = 'Erreur';
         connectButton.classList.remove('connected', 'disconnected');
     }
