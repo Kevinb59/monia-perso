@@ -21,6 +21,12 @@ async function sendMessage() {
     addLoading();
 
     try {
+        const fullHistory = [
+            { role: 'system', content: selectedCharacter.systemPrompt },
+            ...history,
+            { role: 'user', content: message }
+        ];
+
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
@@ -28,7 +34,7 @@ async function sendMessage() {
             },
             body: JSON.stringify({
                 model: 'nous-hermes2-mixtral',
-                messages: [...history, { role: 'user', content: message }],
+                messages: fullHistory,
                 stream: false
             })
         });
