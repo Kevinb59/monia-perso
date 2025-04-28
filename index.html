@@ -1,25 +1,23 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choisir un personnage</title>
+    <title>Choisis ton personnage</title>
     <link rel="stylesheet" href="styles/style.css">
-    <script src="scripts/config.js" defer></script>
-    <script src="scripts/characters.js" defer></script>
-    <script src="scripts/connect.js" defer></script>
-    <script src="scripts/index.js" defer></script>
 </head>
 <body>
+    <header>
+        <h1>Choisis ton personnage</h1>
+        <button id="connect-btn" class="disconnected">Déconnecté</button>
+    </header>
 
-    <button id="connect-btn" class="connect-button">Déconnecté</button>
+    <div id="characters-container"></div>
 
-    <h1 class="title">Choisis ton partenaire</h1>
-
-    <div class="characters-container" id="characters-container">
-        <!-- Les personnages seront ajoutés dynamiquement -->
-    </div>
-
+    <script src="scripts/characters.js"></script>
+    <script src="scripts/index.js"></script>
+    <script src="scripts/connect.js"></script>
 </body>
 </html>
-
