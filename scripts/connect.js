@@ -1,38 +1,35 @@
-// scripts/connect.js
+// /scripts/connect.js
 
 const connectButton = document.getElementById('connect-btn');
 let isConnected = false;
 
-// Dès le chargement de la page, vérifier l'état du Pod
-window.addEventListener('DOMContentLoaded', checkPodStatus);
+async function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-// Action au clic
 connectButton.addEventListener('click', async () => {
+    if (connectButton.disabled) return;
+
+    connectButton.disabled = true;
+    connectButton.innerHTML = '<span class="loader"></span> Traitement...';
+
     if (!isConnected) {
-        connectButton.disabled = true;
-        connectButton.textContent = 'Connexion...';
-        
         try {
             await startPod();
-            isConnected = true;
-            updateButtonState();
+            await delay(3000);
+            await checkPodStatus();
         } catch (error) {
-            console.error('Erreur de connexion Pod :', error);
-            connectButton.textContent = 'Erreur';
+            console.error('Erreur connexion Pod :', error);
         } finally {
             connectButton.disabled = false;
         }
     } else {
-        connectButton.disabled = true;
-        connectButton.textContent = 'Déconnexion...';
-        
         try {
             await stopPod();
-            isConnected = false;
-            updateButtonState();
+            await delay(3000);
+            await checkPodStatus();
         } catch (error) {
-            console.error('Erreur de déconnexion Pod :', error);
-            connectButton.textContent = 'Erreur';
+            console.error('Erreur déconnexion Pod :', error);
         } finally {
             connectButton.disabled = false;
         }
@@ -40,46 +37,35 @@ connectButton.addEventListener('click', async () => {
 });
 
 async function startPod() {
-    const response = await fetch('/api/startPod', {
-        method: 'POST',
-    });
-    const data = await response.json();
-    if (data.errors) throw new Error(data.errors[0].message);
+    await fetch('/api/startPod', { method: 'POST' });
 }
 
 async function stopPod() {
-    const response = await fetch('/api/stopPod', {
-        method: 'POST',
-    });
-    const data = await response.json();
-    if (data.errors) throw new Error(data.errors[0].message);
+    await fetch('/api/stopPod', { method: 'POST' });
 }
 
 async function checkPodStatus() {
     try {
-        const response = await fetch('/api/statusPod', {
-            method: 'POST',
-        });
+        const response = await fetch('/api/statusPod', { method: 'POST' });
         const data = await response.json();
-        const podStatus = data?.pod?.status || 'STOPPED';
 
-        if (podStatus === 'RUNNING') {
+        if (data.status === 'RUNNING') {
             isConnected = true;
+            connectButton.textContent = 'Connecté';
+            connectButton.classList.add('connected');
+            connectButton.classList.remove('disconnected');
         } else {
             isConnected = false;
+            connectButton.textContent = 'Déconnecté';
+            connectButton.classList.add('disconnected');
+            connectButton.classList.remove('connected');
         }
-        updateButtonState();
     } catch (error) {
-        console.error('Erreur lors de la vérification du statut du Pod :', error);
+        console.error('Erreur vérification état Pod :', error);
+        connectButton.textContent = 'Erreur';
+        connectButton.classList.remove('connected', 'disconnected');
     }
 }
 
-function updateButtonState() {
-    if (isConnected) {
-        connectButton.textContent = 'Connecté';
-        connectButton.classList.add('connected');
-    } else {
-        connectButton.textContent = 'Déconnecté';
-        connectButton.classList.remove('connected');
-    }
-}
+// Vérifie l'état du Pod au chargement
+checkPodStatus();
