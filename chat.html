@@ -1,28 +1,28 @@
+<!-- chat.html -->
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Sexy</title>
+    <title>Chat IA</title>
     <link rel="stylesheet" href="styles/style.css">
-    <script src="scripts/config.js" defer></script>
-    <script src="scripts/characters.js" defer></script>
-    <script src="scripts/connect.js" defer></script>
-    <script src="scripts/chat.js" defer></script>
 </head>
 <body>
+    <header>
+        <h1>Chat IA</h1>
+        <button id="connect-btn" class="disconnected">Déconnecté</button>
+    </header>
 
-    <button id="connect-btn" class="connect-button">Déconnecté</button>
-    <button id="back-btn" class="back-button" onclick="window.location.href='index.html'">Changer de personnage</button>
+    <div id="chat-container"></div>
 
-    <div id="chat-container" class="chat-container">
-        <!-- Messages apparaîtront ici -->
-    </div>
-
-    <div class="input-container">
-        <textarea id="user-input" placeholder="Écris ton message..."></textarea>
+    <div style="display: flex; padding: 1em; background: #111;">
+        <input type="text" id="user-input" placeholder="Écris ton message..." autocomplete="off">
         <button id="send-btn">Envoyer</button>
     </div>
 
+    <script src="scripts/characters.js"></script>
+    <script src="scripts/chat.js"></script>
+    <script src="scripts/connect.js"></script>
 </body>
 </html>
