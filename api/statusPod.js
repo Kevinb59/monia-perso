@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
     if (!RUNPOD_API_KEY || !POD_ID) {
-        return res.status(500).json({ error: 'Clé API ou ID de Pod manquant' });
+        return res.status(500).json({ error: 'Variables d’environnement manquantes.' });
     }
 
     if (req.method !== 'POST') {
@@ -16,26 +16,29 @@ export default async function handler(req, res) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${RUNPOD_API_KEY}`,
+                'Authorization': `Bearer ${RUNPOD_API_KEY}`
             },
             body: JSON.stringify({
                 query: `
                     query {
                         pod(podId: "${POD_ID}") {
+                            id
                             status
                         }
                     }
                 `
-            }),
+            })
         });
 
         const data = await response.json();
 
-        if (data.errors) {
-            throw new Error(data.errors[0].message);
+        if (!data || !data.data || !data.data.pod) {
+            return res.status(500).json({ error: 'Impossible de récupérer le statut du Pod.' });
         }
 
-        res.status(200).json(data);
+        const podStatus = data.data.pod.status; // RUNNING, PAUSED, EXITED, etc.
+
+        res.status(200).json({ podStatus });
     } catch (error) {
         console.error('Erreur API StatusPod:', error);
         res.status(500).json({ error: 'Erreur serveur' });
