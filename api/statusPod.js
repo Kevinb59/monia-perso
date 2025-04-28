@@ -4,10 +4,10 @@ export default async function handler(req, res) {
     const { RUNPOD_API_KEY, POD_ID } = process.env;
 
     if (!RUNPOD_API_KEY || !POD_ID) {
-        return res.status(500).json({ error: 'Variables d’environnement manquantes.' });
+        return res.status(500).json({ error: 'Clé API ou Pod ID manquant.' });
     }
 
-    if (req.method !== 'POST') {
+    if (req.method !== 'GET') {
         return res.status(405).json({ error: 'Méthode non autorisée' });
     }
 
@@ -32,13 +32,11 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
-        if (!data || !data.data || !data.data.pod) {
-            return res.status(500).json({ error: 'Impossible de récupérer le statut du Pod.' });
+        if (data.errors) {
+            throw new Error(data.errors[0].message);
         }
 
-        const podStatus = data.data.pod.status; // RUNNING, PAUSED, EXITED, etc.
-
-        res.status(200).json({ podStatus });
+        res.status(200).json({ podStatus: data.data.pod.status });
     } catch (error) {
         console.error('Erreur API StatusPod:', error);
         res.status(500).json({ error: 'Erreur serveur' });
