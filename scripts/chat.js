@@ -33,7 +33,7 @@ async function sendMessage() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'mixtral',
+                model: 'nous-hermes2-mixtral',
                 messages: fullHistory,
                 stream: false
             })
